@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% load widget_tweaks %}
+  {% load staticfiles %}
+  <title>{{ fact.title }}</title>
+  <link rel="stylesheet" href="{% static "facts/jquery-ui.theme.min.css" %}">
+  <script src="{% static "facts/external/jquery/jquery.js" %}"></script>
+  <script src="{% static "facts/jquery-ui.min.js" %}"></script>
+  <style>
+    .ui-helper-hidden-accessible { display:none; }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button
+    {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"]
+    {
+      -moz-appearance: textfield;
+    }
+    table, th, td
+    {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 0em 1em;
+    }
+    table
+    {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    table tbody tr:nth-child(odd)
+    {
+      background: #ffffff;
+    }
+    table tbody tr:nth-child(even)
+    {
+      background: #f2f6f8;
+    }
+    .c
+    {
+      text-align: center;
+    }
+    .r
+    {
+      text-align: right;
+    }
+    .inp-c
+    {
+      text-align: center;
+      width: 100%;
+      border-style: solid;
+      border-width: 0px 1px 0px 1px;
+      border-color: black;
+    }
+    .inp-r
+    {
+      text-align: right;
+      width: 100%;
+      border-style: solid;
+      border-width: 0px 1px 0px 1px;
+      border-color: black;
+    }
+    .red
+    {
+      color: red;
+    }
+
+  </style>
+  <script>
+    function onItem(data)
+    {
+      window.location.search = data;
+    };
+    $(function() {
+      $( "#id_a" ).autocomplete({
+        source: "/facts/{{ fact.id }}/a/",
+        minLength: 0
+      });
+    });
+    $(function() {
+      $( "#id_b" ).autocomplete({
+        source: "/facts/{{ fact.id }}/b/",
+        minLength: 0
+      });
+    });
+  </script>
+</head>
+<body>
+<a href="../admin/facts/fact/{{ fact.id }}/">Edit a fact</a>
+<a href="/facts/">Reload a fact</a>
+<a href="/facts/days/">View a days</a>
+{% if item %}
+  <form style="display: inline;" method="post" action="." onsubmit="return confirm('Really?');">
+    {% csrf_token %}
+    <input type="hidden" name="item" value="{{ item.id }}">
+    <input type="hidden" name="delete" value="">
+    <input type="submit" value="Drop selected item #{{ item.id }}">
+  </form>
+{% endif %}
+<hr>
+<form id="facts" class="c" style="padding-bottom: 0.5em;" method="get">
+  <select name="fact" onChange="document.forms.facts.submit();" style="min-width: 25%;">
+    {% for opt, sel in facts %}
+      <option value={{ opt.id }}{{ sel }}>{{ opt.title }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div class="red">
+  {{ form.non_field_errors }}
+</div>
+<form id="addItem" method="post" action=".">
+  {% csrf_token %}
+  <table>
+    <tr>
+      <th>{{ fact.tense }}</th>
+      <th>{{ fact.cost }}</th>
+      <th>{{ fact.exchange }}</th>
+      <th>{{ fact.a }}</th>
+      <th>{{ fact.b }}</th>
+    </tr>
+    {% if not valid %}
+      <tr class="red">
+        <td class="c">{{ form.tense.errors }}</td>
+        <td class="c">{{ form.cost.errors }}</td>
+        <td class="c">{{ form.exchange.errors }}</td>
+        <td class="c">{{ form.a.errors }}</td>
+        <td class="c">{{ form.b.errors }}</td>
+      </tr>
+    {% endif %}
+    <tbody>
+    <tr>
+      <td>{{ form.tense|add_class:"inp-c"|attr:"autofocus" }}</td>
+      <td>{{ form.cost|add_class:"inp-r" }}</td>
+      <td>{{ form.exchange|add_class:"inp-c" }}</td>
+      <td>{{ form.a|add_class:"inp-c" }}</td>
+      <td>{{ form.b|add_class:"inp-c" }}</td>
+    </tr>
+    {% for item in items %}
+      <tr onclick="onItem('?item={{ item.id }}')" style="cursor:pointer" title="item={{ item.id }}">
+        <td class="c">{{ item.tense|date:dt.date }} {{ item.tense|time:dt.time }}</td>
+        <td class="r">{{ item.cost|floatformat:2 }}</td>
+        <td class="c">{{ item.exchange.title }}</td>
+        <td class="c">{{ item.a }}</td>
+        <td class="c">{{ item.b }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <input type="hidden" name="fact" value="{{ fact.id }}">
+  <input type="hidden" name="item" value="{{ item.id }}">
+  <input type="submit" name="submit" value="submit"
+    style="position: absolute; height: 0px; width: 0px; border: none; padding: 0px;"
+    hidefocus="true" tabindex="-1"/>
+</form>
+</body>
+</html>
