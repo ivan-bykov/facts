@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.test import TestCase
@@ -123,11 +124,15 @@ class Test(TestCase):
         f.save()
         e = Exchange(title='e')
         e.save()
-        i0 = Item(fact=f, tense=timezone.now(), cost=1, exchange=e, a='2')
+        now = timezone.now()
+        i0 = Item(fact=f, tense=now - timedelta(hours=3), cost=1, exchange=e,
+            a='2')
         i0.save()
-        i1 = Item(fact=f, tense=timezone.now(), cost=1, exchange=e, a='1')
+        i1 = Item(fact=f, tense=now - timedelta(hours=2), cost=1, exchange=e,
+            a='1')
         i1.save()
-        i2 = Item(fact=f, tense=timezone.now(), cost=1, exchange=e, a='2')
+        i2 = Item(fact=f, tense=now - timedelta(hours=1), cost=1, exchange=e,
+            a='2')
         i2.save()
         r = self.client.get('/facts/%s/a/' % f.id)
         self.assertEqual(r.status_code, 200)
