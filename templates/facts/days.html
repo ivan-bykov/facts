@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Days</title>
+  <style>
+    table, th, td
+    {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 0em 1em;
+    }
+    table
+    {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    table tbody tr:nth-child(odd)
+    {
+      background: #ffffff;
+    }
+    table tbody tr:nth-child(even)
+    {
+      background: #f2f6f8;
+    }
+    .c
+    {
+      text-align: center;
+    }
+    .l
+    {
+      text-align: left;
+    }
+    .r
+    {
+      text-align: right;
+    }
+  </style>
+  <script>
+  </script>
+</head>
+<body>
+  <table>
+    <tr>
+      <th>Fact</th>
+      <th>Days</th>
+      <th>Delta</th>
+      <th>Left</th>
+      <th>Event time</th>
+    </tr>
+    <tbody>
+      {% for row in rows %}
+        <tr>
+          <td class="l">{{ row.title }}</td>
+          <td class="r">{{ row.days }}</td>
+          {% if row.delta < row.days %}
+            <td class="r">{{ row.delta }}</td>
+            <td class="r">{{ row.left }}</td>
+          {% else %}
+            <td class="r" style="color: red;">{{ row.delta }}</td>
+            <td class="r" style="color: red;">{{ row.left }}</td>
+          {% endif %}
+          <td class="c">{{ row.event|date:dt.date }} {{ row.event|time:dt.time }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
