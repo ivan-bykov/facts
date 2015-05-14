@@ -125,14 +125,12 @@ class Test(TestCase):
         e = Exchange(title='e')
         e.save()
         now = timezone.now()
-        i0 = Item(fact=f, tense=now - timedelta(hours=3), cost=1, exchange=e,
-            a='2')
+        step = timedelta(hours=1)
+        i0 = Item(fact=f, tense=now, cost=1, exchange=e, a='2')
         i0.save()
-        i1 = Item(fact=f, tense=now - timedelta(hours=2), cost=1, exchange=e,
-            a='1')
+        i1 = Item(fact=f, tense=now - step, cost=1, exchange=e, a='1')
         i1.save()
-        i2 = Item(fact=f, tense=now - timedelta(hours=1), cost=1, exchange=e,
-            a='2')
+        i2 = Item(fact=f, tense=now - 2 * step, cost=1, exchange=e, a='2')
         i2.save()
         r = self.client.get('/facts/%s/a/' % f.id)
         self.assertEqual(r.status_code, 200)
