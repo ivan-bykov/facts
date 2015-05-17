@@ -30,27 +30,12 @@ def parse(data):
         try:
             item = Item.objects.get(pk=item)
         except Item.DoesNotExist:
-            raise KeyError()
-    except (KeyError, ValueError, TypeError):
-        item = ''
         try:
             fact = int(data['fact'])
-            try:
-                fact = Fact.objects.get(pk=fact)
-            except Fact.DoesNotExist:
-                raise KeyError()
         except (KeyError, ValueError, TypeError):
             try:
-                fact = Fact.objects.latest('viewed')
             except Fact.DoesNotExist:
-                fact = Fact(title='test')
                 fact.save()
-        else:
-            fact.viewed = timezone.now()
-            fact.save()
-    else:
-        fact = item.fact
-        rm = 'delete' in data
     return fact, item, rm
 
 def formdata(item):
