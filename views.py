@@ -100,7 +100,6 @@ def index(request):
     template = loader.get_template('facts/index.html')
     context = RequestContext(request,
         {
-        'dt': DT,
             'fact': fact,
             'item': item,
             'facts': facts,
