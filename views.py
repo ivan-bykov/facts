@@ -138,7 +138,7 @@ def rest(request):
     return JsonResponse(rows, safe=False)
 
 def data(request, fact_id, field):
-    'ordered and unique autocomplete values'
+    'ordered and unique data for js autocomplete'
     fact = get_object_or_404(Fact, pk=fact_id)
     if field not in 'a b':
         raise Http404
