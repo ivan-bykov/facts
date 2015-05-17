@@ -24,18 +24,40 @@ class Form(ModelForm):
             }
 
 def parse(data):
-    rm = False
+    fact, item, rm = '', '', False
     try:
         item = int(data['item'])
+    except (KeyError, ValueError, TypeError):
+        pass
+    else:
         try:
             item = Item.objects.get(pk=item)
         except Item.DoesNotExist:
+            pass
+        else:
+            fact = item.fact
+            rm = 'delete' in data
+    if not item:
         try:
             fact = int(data['fact'])
         except (KeyError, ValueError, TypeError):
+            pass
+        else:
             try:
+                fact = Fact.objects.get(pk=fact)
             except Fact.DoesNotExist:
+                pass
+            else:
+                fact.viewed = timezone.now()
                 fact.save()
+    if not fact:
+        try:
+            fact = Fact.objects.latest('viewed')
+        except Fact.DoesNotExist:
+            pass
+    if not fact:
+        fact = Fact(title='test')
+        fact.save()
     return fact, item, rm
 
 def formdata(item):
@@ -78,13 +100,14 @@ def index(request):
     template = loader.get_template('facts/index.html')
     context = RequestContext(request,
         {
-        'fact': fact,
-        'item': item,
-        'facts': facts,
-        'items': items,
         'dt': DT,
-        'form': form,
-        'valid': valid,
+            'fact': fact,
+            'item': item,
+            'facts': facts,
+            'items': items,
+            'dt': DT,
+            'form': form,
+            'valid': valid,
         }
         )
     return HttpResponse(template.render(context))
@@ -106,12 +129,7 @@ def daysdata():
 
 def days(request):
     template = loader.get_template('facts/days.html')
-    context = RequestContext(request,
-        {
-        'rows': daysdata(),
-        'dt': DT,
-        }
-        )
+    context = RequestContext(request, {'rows': daysdata(), 'dt': DT})
     return HttpResponse(template.render(context))
 
 def rest(request):
