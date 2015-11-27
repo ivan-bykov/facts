@@ -78,7 +78,7 @@ class Test(TestCase):
     def testView(self):
         r = self.client.get(reverse('facts:index'))
         self.assertEqual(r.status_code, 200)
-        self.assertIn('selected>test</option', r.content)
+        self.assertIn(b'selected>test</option', r.content)
         self.assertEqual(r.context['fact'].id, 1)
         self.assertFalse(r.context['item'])
         self.assertEqual(len(r.context['facts']), 1)
@@ -134,11 +134,11 @@ class Test(TestCase):
         i2.save()
         r = self.client.get('/facts/%s/a/' % f.id)
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.content, '["2", "1"]')
+        self.assertEqual(r.content, b'["2", "1"]')
 
         r = self.client.get('/facts/%s/b/' % f.id)
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.content, '[]')
+        self.assertEqual(r.content, b'[]')
 
         r = self.client.get('/facts/%s/c/' % f.id)
         self.assertEqual(r.status_code, 404)
