@@ -4,8 +4,9 @@ from django.shortcuts import get_object_or_404
 from django.forms import ModelForm, DateTimeInput
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, \
     Http404
-from django.template import RequestContext, loader
+from django.template import loader
 from django.utils import timezone
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from facts.models import Fact, Item
 
@@ -70,6 +71,7 @@ def formdata(item):
         res['tense'] = timezone.now()
     return res
 
+@ensure_csrf_cookie
 def index(request):
     if request.method == 'POST':
         fact, item, rm = parse(request.POST)
@@ -98,18 +100,17 @@ def index(request):
     items = fact.items.order_by('-tense')
 
     template = loader.get_template('facts/index.html')
-    context = RequestContext(request,
+    context = \
         {
-            'fact': fact,
-            'item': item,
-            'facts': facts,
-            'items': items,
-            'dt': DT,
-            'form': form,
-            'valid': valid,
+        'fact': fact,
+        'item': item,
+        'facts': facts,
+        'items': items,
+        'dt': DT,
+        'form': form,
+        'valid': valid,
         }
-        )
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(context, request))
 
 def daysdata():
     now = timezone.now()
@@ -128,7 +129,7 @@ def daysdata():
 
 def days(request):
     template = loader.get_template('facts/days.html')
-    context = RequestContext(request, {'rows': daysdata(), 'dt': DT})
+    context = {'rows': daysdata(), 'dt': DT}
     return HttpResponse(template.render(context))
 
 def rest(request):
