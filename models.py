@@ -26,10 +26,10 @@ class Fact(db.Model):
     __str__ = __unicode__
 
 class Item(db.Model):
-    fact = db.ForeignKey(Fact, related_name='items')
+    fact = db.ForeignKey(Fact, db.CASCADE, related_name='items')
     tense = db.DateTimeField()
     cost = db.DecimalField(max_digits=16, decimal_places=2)
-    exchange = db.ForeignKey(Exchange)
+    exchange = db.ForeignKey(Exchange, db.SET_NULL, null=True)
     a = db.CharField(blank=True, max_length=256)
     b = db.CharField(blank=True, max_length=256)
 

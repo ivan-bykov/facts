@@ -44,8 +44,10 @@ class Migration(migrations.Migration):
                 ('cost', models.DecimalField(max_digits=16, decimal_places=2)),
                 ('a', models.CharField(max_length=256, blank=True)),
                 ('b', models.CharField(max_length=256, blank=True)),
-                ('exchange', models.ForeignKey(to='facts.Exchange')),
-                ('fact', models.ForeignKey(related_name='items', to='facts.Fact')),
+                ('exchange', models.ForeignKey(to='facts.Exchange',
+                    on_delete=models.SET_NULL, null=True)),
+                ('fact', models.ForeignKey(related_name='items',
+                    to='facts.Fact', on_delete=models.CASCADE)),
             ],
             options={
             },
