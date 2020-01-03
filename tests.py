@@ -1,9 +1,11 @@
 from datetime import timedelta
-from django.core.urlresolvers import reverse
-from django.utils import timezone
+
+from django.urls import reverse
 from django.test import TestCase
-from facts.models import Fact, Item, Exchange
+from django.utils import timezone
+
 from facts.views import parse
+from facts.models import Fact, Item, Exchange
 
 class Test(TestCase):
     def testParse(self):
