@@ -1,5 +1,3 @@
-#coding: cp1251
-
 from django.db import models as db
 
 class Exchange(db.Model):
@@ -13,11 +11,11 @@ class Exchange(db.Model):
 class Fact(db.Model):
     title = db.CharField(max_length=256)
     viewed = db.DateTimeField(auto_now_add=True)
-    tense = db.CharField(default='Дата', max_length=256)
-    cost = db.CharField(default='Стоимость', max_length=256)
-    exchange = db.CharField(default='Валюта', max_length=256)
-    a = db.CharField(default='Дополнительно А', max_length=256)
-    b = db.CharField(default='Дополнительно Б', max_length=256)
+    tense = db.CharField(default='Р”Р°С‚Р°', max_length=256)
+    cost = db.CharField(default='РЎС‚РѕРёРјРѕСЃС‚СЊ', max_length=256)
+    exchange = db.CharField(default='Р’Р°Р»СЋС‚Р°', max_length=256)
+    a = db.CharField(default='Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ Рђ', max_length=256)
+    b = db.CharField(default='Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ Р‘', max_length=256)
     days = db.IntegerField(default=0)
 
     def __unicode__(self):
